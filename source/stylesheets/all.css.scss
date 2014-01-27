@@ -8,19 +8,10 @@
   }
 }
 
-.rotating {
-  animation: rotating 2s linear infinite;
-}
-
 @mixin glowing($color, $radius: 5px) {
-  text-shadow: 0 0 $radius #fff,
-               0 0 $radius*2 #fff,
-               0 0 $radius*3 #fff,
-               0 0 $radius*4 $color,
-               0 0 $radius*7 $color,
-               0 0 $radius*8 $color,
-               0 0 $radius*10 $color,
-               0 0 $radius*15 $color;
+  text-shadow: 0 0 $radius #fff, 0 0 $radius*2 #fff, 0 0 $radius*3 #fff,
+               0 0 $radius*4 $color, 0 0 $radius*7 $color, 0 0 $radius*8 $color,
+               0 0 $radius*10 $color, 0 0 $radius*15 $color;
 }
 
 body {
@@ -31,11 +22,9 @@ body {
 
 main {
   display: inline-block;
-  // max-width: 800px;
 }
 
 .btn-custom {
-  display: inline-block;
   margin-top: 3rem;
   font-size: 2rem;
   background: transparent;
@@ -43,10 +32,11 @@ main {
   border: 2px solid rgba(255,255,255,0.5);
   width: 25rem;
   padding: 1rem 4rem;
+  transition: all 0.3s;
 
   &:hover, &:active {
-    color: rgba(255,255,255,0.8);
-    border: 2px solid rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.7);
+    border: 2px solid rgba(255,255,255,0.7);
   }
 }
 
@@ -69,6 +59,7 @@ h1 {
 section {
   h2 {
     margin-top: 0;
+    margin-bottom: 0;
     color: rgba(255,255,255,0.7);
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
@@ -103,6 +94,7 @@ section {
   #loading {
     display: block;
     span {
+      animation: rotating 2s linear infinite;
       color: rgba(255,255,255,0.8);
       font-size: 8rem;
       line-height: 180px;
@@ -158,4 +150,14 @@ section {
 
 .tt-is-under-cursor {
   background-color: desaturate(lighten(#001d23, 80%), 80%);
+}
+
+@media only screen and (max-width : 750px) {
+  h1 {
+    font-size: 4rem;
+  }
+
+  .and {
+    display: none !important;
+  }
 }
