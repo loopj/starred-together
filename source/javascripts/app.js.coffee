@@ -52,9 +52,9 @@ class StarredTogether
       t = a[j]; a[j] = a[i]; a[i] = t
     a
 
-  constructor: ->
+  constructor: (apiKey) ->
     # Create a MovieDB client'
-    @client = new MovieDBClient("8f564a315e6d6e0079d1024f7428f9cf")
+    @client = new MovieDBClient(apiKey)
 
     # Cache some jquery selectors
     @actorInputs = $("[data-actor]")
@@ -171,4 +171,4 @@ class StarredTogether
       cb() if cb
 
 
-new StarredTogether()
+window.StarredTogether = StarredTogether

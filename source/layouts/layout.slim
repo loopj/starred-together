@@ -25,3 +25,6 @@ html
     script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min.js"
 
     == javascript_include_tag  "all"
+
+    javascript:
+      var app = new StarredTogether("#{ENV["API_KEY"]}");
