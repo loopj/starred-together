@@ -1,3 +1,4 @@
+// Rotation animation for loading spinner
 @keyframes rotating {
   from {
     transform: rotate(0deg);
@@ -8,6 +9,7 @@
   }
 }
 
+// Text glow effect
 @mixin glowing($color, $radius: 5px) {
   text-shadow: 0 0 $radius #fff, 0 0 $radius*2 #fff, 0 0 $radius*3 #fff,
                0 0 $radius*4 $color, 0 0 $radius*7 $color, 0 0 $radius*8 $color,
@@ -20,12 +22,14 @@ body {
   text-align: center;
 }
 
+// Main column
 main {
   display: inline-block;
 }
 
+// Custom button style
 .btn-custom {
-  margin-top: 3rem;
+  margin: 3rem 1rem;
   font-size: 2rem;
   background: transparent;
   color: rgba(255,255,255,0.5);
@@ -40,6 +44,7 @@ main {
   }
 }
 
+// Header
 h1 {
   display: inline-block;
   font-family: 'Codystar', cursive;
@@ -56,6 +61,7 @@ h1 {
   @include glowing(#f95, 10px);
 }
 
+// Main app
 section {
   h2 {
     margin-top: 0;
@@ -121,6 +127,10 @@ section {
       }
       img {
         display: table-cell;
+        margin: 1rem 0;
+        width: 45px;
+        height: 68px;
+        background: #666;
       }
       padding: 0;
       margin: 0;
@@ -128,6 +138,7 @@ section {
   }
 }
 
+// Twitter Typeahead styles
 .tt-hint {
   color: #bbb;
 }
@@ -152,6 +163,7 @@ section {
   background-color: desaturate(lighten(#001d23, 80%), 80%);
 }
 
+// Media queries for small screens
 @media only screen and (max-width : 750px) {
   h1 {
     font-size: 4rem;

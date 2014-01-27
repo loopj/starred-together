@@ -17,14 +17,35 @@ class StarredTogether
     {name: "Patrick Stewart", id: 2387}
     {name: "Ian McKellen", id: 1327}
     {name: "Kevin Bacon", id: 4724}
+    {name: "Christian Bale", id: 3894}
+    {name: "Leonardo DiCaprio", id: 6193}
+    {name: "Amy Adams", id: 9273}
+    {name: "Cate Blanchett", id: 112}
+    {name: "Sandra Bullock", id: 18277}
+    {name: "Meryl Streep", id: 5064}
   ]
+
+  shuffleArray = (a) ->
+    i = a.length
+    while --i > 0
+      j = ~~(Math.random() * (i + 1))
+      t = a[j]; a[j] = a[i]; a[i] = t
+    a
 
   constructor: ->
     # Create a MovieDB client'
     @client = new MovieDBClient("8f564a315e6d6e0079d1024f7428f9cf")
 
+    # Cache some jquery selectors
+    @actorInputs = $("[data-actor]")
+    @form = $("form")
+    @movieList = $("#movies")
+    @loadingSpinner = $("#loading")
+    @resultsTitle = $("#results h2")
+    @resultsPane = $("#results")
+
     # Attach typeahead functionality to actor inputs
-    $("[data-actor]").typeahead 
+    @actorInputs.typeahead 
       template: TYPEAHEAD_TEMPLATE,
       engine: Hogan,
       name: "actors",
@@ -38,7 +59,7 @@ class StarredTogether
             value: result.name
 
     # Store selected actor id on input
-    $("[data-actor]").on "typeahead:selected", (e, actor) ->
+    @actorInputs.on "typeahead:selected", (e, actor) ->
       $(this).data "actor-id", actor.id
 
     # Fix bootstrap styles with typeahead
@@ -49,33 +70,39 @@ class StarredTogether
 
     # Hook up clear button
     $("#reset").click (e) =>
-      @reset()
+      @reset =>
+        @actorInputs.first().focus()
+
+      e.preventDefault()
+
+    $("#random").click (e) =>
+      @randomSearch()
       e.preventDefault()
 
     # Hook up form submit
-    $("form").submit (e) =>
+    @form.submit (e) =>
       @search()
+      e.stopPropagation()
       e.preventDefault()
 
   randomize: ->
-    SAMPLE_SEARCHES.sort(-> 0.5 - Math.random())
-
-    $("[data-actor]").each (idx) ->
+    shuffleArray(SAMPLE_SEARCHES)
+    @actorInputs.each (idx) ->
       actor = SAMPLE_SEARCHES[idx]
       $(this)
         .val(actor.name)
         .data("actor-id", actor.id)
 
   randomSearch: ->
+    @reset()
     @randomize()
-    @search()
 
   search: ->
     # TODO: Validate form fields are filled
 
-    $("form").fadeOut => $("#loading").fadeIn =>
+    @form.fadeOut => @loadingSpinner.fadeIn =>
       # Fetch actor ids from inputs
-      actorIds = $("[data-actor]").map(-> $(this).data("actor-id")).toArray()
+      actorIds = @actorInputs.map(-> $(this).data("actor-id")).toArray()
 
       # Create credits promises for each actor
       actorCredits = actorIds.map (id) => @client.movieCredits(id)
@@ -86,35 +113,35 @@ class StarredTogether
           data[1].cast.some (el) -> credit.id == el.id
 
         # Show the results
-        $("#movies").empty()
+        @movieList.empty().show()
 
-        actorNames = $.map($("[data-actor]"), (el) -> $(el).val()).join(" &amp; ")
+        actorNames = $.map(@actorInputs, (el) -> $(el).val()).join(" & ")
         if sharedCredits.length > 0
           movies = if sharedCredits.length > 1 then "movies" else "movie"
-          $("#results h2").html("Yes! #{actorNames} have starred in #{sharedCredits.length} #{movies} together!")
+          @resultsTitle.text("Yes! #{actorNames} have starred in #{sharedCredits.length} #{movies} together!")
 
           sharedCredits.forEach (credit) =>
-            $("#movies").append RESULTS_TEMPLATE.render({
+            @movieList.append RESULTS_TEMPLATE.render({
               name: credit.title,
               image: @client.buildImageUrl(credit.poster_path)
             })
         else
-          $("#results h2").html("No! #{actorNames} have never starred together!")
+          @movieList.hide()
+          @resultsTitle.text("No! #{actorNames} have never starred together!")
 
-        $("#loading").fadeOut ->
-          $("#results").fadeIn()
+        @loadingSpinner.fadeOut => @resultsPane.fadeIn()
 
       , (xhr) ->
         console.log "failed", xhr
 
-  reset: ->
-    $("[data-actor]")
+  reset: (cb) ->
+    @actorInputs
       .val("")
       .data("actor-id", null)
 
-    $("#movies").empty()
-    $("#results").fadeOut -> $("form").fadeIn ->
-      $("[data-actor]:first").focus()
+    @resultsPane.fadeOut => @form.fadeIn =>
+      @movieList.empty()
+      cb() if cb
 
 
 new StarredTogether()
