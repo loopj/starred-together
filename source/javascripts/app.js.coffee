@@ -102,7 +102,6 @@ class StarredTogether
     # Hook up form submit
     @form.submit (e) =>
       @search()
-      e.stopPropagation()
       e.preventDefault()
 
   randomize: ->
@@ -136,7 +135,7 @@ class StarredTogether
 
         actorNames = @getActorNames().join(" & ")
         if sharedCredits.length > 0
-          @resultsTitle.text("Yes! #{actorNames} have starred in #{sharedCredits.length} #{if sharedCredits.length > 1 then "movies" else "movie"} together!")
+          @resultsTitle.text("Yes! #{actorNames} star in #{sharedCredits.length} #{if sharedCredits.length > 1 then "movies" else "movie"} together!")
 
           sharedCredits.forEach (credit) =>
             @movieList.append RESULTS_TEMPLATE.render({
