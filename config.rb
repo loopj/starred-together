@@ -35,6 +35,8 @@
 # Automatic image dimensions on image_tag helper
 # activate :automatic_image_sizes
 
+activate :autoprefixer, browsers: ['last 2 versions', 'ie 8', 'ie 9']
+
 # Reload the browser automatically whenever files change
 # activate :livereload
 

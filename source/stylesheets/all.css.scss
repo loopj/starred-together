@@ -1,3 +1,17 @@
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotating 2s linear infinite;
+}
+
 @mixin glowing($color, $radius: 5px) {
   text-shadow: 0 0 $radius #fff,
                0 0 $radius*2 #fff,
@@ -12,10 +26,28 @@
 body {
   background: #001d23;
   font-family: 'Open Sans', sans-serif;
+  text-align: center;
 }
 
 main {
-  text-align: center;
+  display: inline-block;
+  // max-width: 800px;
+}
+
+.btn-custom {
+  display: inline-block;
+  margin-top: 3rem;
+  font-size: 2rem;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: 2px solid rgba(255,255,255,0.5);
+  width: 25rem;
+  padding: 1rem 4rem;
+
+  &:hover, &:active {
+    color: rgba(255,255,255,0.8);
+    border: 2px solid rgba(255,255,255,0.8);
+  }
 }
 
 h1 {
@@ -26,7 +58,7 @@ h1 {
   background: #000;
   color: #fff;
   text-align: center;
-  -webkit-transform: rotate(-6deg);
+  transform: rotate(-6deg);
   font-size: 6rem;
   border: 6px double rgba(255, 173, 85, 0.8);
   border-radius: 10px;
@@ -34,22 +66,96 @@ h1 {
   @include glowing(#f95, 10px);
 }
 
-h2 {
-  color: rgba(255,255,255,0.8);
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-}
+section {
+  h2 {
+    margin-top: 0;
+    color: rgba(255,255,255,0.7);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+  }
 
-#actors {
-  margin: 0;
-  padding: 0;
-  li {
-    margin: 0 1rem;
+  #actors {
+    margin: 3rem 0 0 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+      margin: 0 1rem;
+      padding: 0;
+      display: inline-block;
+
+      input {
+        font-size: 3rem;
+        height: 50px;
+        width: 300px;
+      }
+
+      &.and {
+        span {
+          color: rgba(255,255,255,0.2);
+          font-size: 2.5rem;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  #loading {
+    display: block;
+    span {
+      color: rgba(255,255,255,0.8);
+      font-size: 8rem;
+      line-height: 180px;
+      vertical-align: middle;
+    }
+  }
+
+  #movies {
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 3rem;
+    list-style-type: none;
+    display: table;
+
+    li {
+      display: table-row;
+      span {
+        color: rgba(255,255,255,0.8);
+        font-size: 2rem;
+        display: table-cell;
+        vertical-align: middle;
+        padding: 0 2rem;
+        text-align: left;
+      }
+      img {
+        display: table-cell;
+      }
+      padding: 0;
+      margin: 0;
+    }
   }
 }
 
-#result {
-  font-size: 4em;
-  font-weight: 800;
-  color: rgba(255,255,255,0.8);
+.tt-hint {
+  color: #bbb;
+}
+
+.tt-dropdown-menu {
+  background: white;
+  text-align: left;
+  width: 300px;
+
+  img {
+    width: 30px;
+    height: 45px;
+    background-color: #ddd;
+  }
+
+  span {
+    font-size: 2rem;
+  }
+}
+
+.tt-is-under-cursor {
+  background-color: desaturate(lighten(#001d23, 80%), 80%);
 }

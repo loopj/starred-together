@@ -2,12 +2,14 @@ class StarredTogether
   # Templates
   TYPEAHEAD_TEMPLATE = """
     <img src="{{image}}">
-    {{name}}
+    <span>{{name}}</span>
     """
 
   RESULTS_TEMPLATE = Hogan.compile """
-    <img src="{{image}}">
-    {{name}}
+    <li>
+      <img src="{{image}}">
+      <span>{{name}}</span>
+    </li>
     """
 
   SAMPLE_SEARCHES = [
@@ -46,8 +48,8 @@ class StarredTogether
     @randomize()
 
     # Hook up clear button
-    $("#clear").click (e) =>
-      @clear()
+    $("#reset").click (e) =>
+      @reset()
       e.preventDefault()
 
     # Hook up form submit
@@ -69,43 +71,50 @@ class StarredTogether
     @search()
 
   search: ->
-    # Fetch actor ids from inputs
-    actorIds = $("[data-actor]").map(-> $(this).data("actor-id")).toArray()
-    console.log actorIds
+    # TODO: Validate form fields are filled
 
-    # Create credits promises for each actor
-    actorCredits = actorIds.map (id) => @client.movieCredits(id)
+    $("form").fadeOut => $("#loading").fadeIn =>
+      # Fetch actor ids from inputs
+      actorIds = $("[data-actor]").map(-> $(this).data("actor-id")).toArray()
 
-    # Find shared credits
-    Q.all(actorCredits).then (data) =>
-      sharedCredits = data[0].cast.filter (credit) ->
-        data[1].cast.some (el) -> credit.id == el.id
+      # Create credits promises for each actor
+      actorCredits = actorIds.map (id) => @client.movieCredits(id)
 
-      # Show the results
-      $("#movies").empty()
+      # Find shared credits
+      Q.all(actorCredits).then (data) =>
+        sharedCredits = data[0].cast.filter (credit) ->
+          data[1].cast.some (el) -> credit.id == el.id
 
-      if sharedCredits.length > 0
-        $("#result").html("YES")
+        # Show the results
+        $("#movies").empty()
 
-        sharedCredits.forEach (credit) =>
-          $("#movies").append RESULTS_TEMPLATE.render({
-            name: credit.title,
-            image: @client.buildImageUrl(credit.poster_path)
-          })
-      else
-        $("#result").html("NO")
+        actorNames = $.map($("[data-actor]"), (el) -> $(el).val()).join(" &amp; ")
+        if sharedCredits.length > 0
+          movies = if sharedCredits.length > 1 then "movies" else "movie"
+          $("#results h2").html("Yes! #{actorNames} have starred in #{sharedCredits.length} #{movies} together!")
 
-    , (xhr) ->
-      console.log "failed"
+          sharedCredits.forEach (credit) =>
+            $("#movies").append RESULTS_TEMPLATE.render({
+              name: credit.title,
+              image: @client.buildImageUrl(credit.poster_path)
+            })
+        else
+          $("#results h2").html("No! #{actorNames} have never starred together!")
 
-  clear: ->
+        $("#loading").fadeOut ->
+          $("#results").fadeIn()
+
+      , (xhr) ->
+        console.log "failed", xhr
+
+  reset: ->
     $("[data-actor]")
       .val("")
       .data("actor-id", null)
 
     $("#movies").empty()
-    $("#result").empty()
+    $("#results").fadeOut -> $("form").fadeIn ->
+      $("[data-actor]:first").focus()
 
-    $("[data-actor]:first").focus()
 
 new StarredTogether()

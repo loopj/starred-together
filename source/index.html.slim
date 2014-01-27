@@ -1,20 +1,26 @@
 h1 Starred Together
 
-h2 Have these actors starred in the same movie?
-form.form-inline
-  ul#actors
-    li.form-group
-      input.form-control type="text" data-actor="true"
+section
+  form.form-inline
+    h2 Have these actors starred in a movie together?
 
-    li.form-group
-      input.form-control type="text" data-actor="true"
+    ul#actors
+      li.form-group
+        input.form-control type="text" data-actor="true"
 
-  input.btn type="submit" value="Search"
+      li.and
+        span &amp;
 
-  ul#links
-    li: a href="#" id="clear" Clear
-    li: a href="#" id="random" Random
+      li.form-group
+        input.form-control type="text" data-actor="true"
 
-#result
+    input.btn.btn-custom type="submit" value="Tell Me!"
 
-#movies
+  #loading style="display: none"
+    span.glyphicon.glyphicon-star-empty.rotating
+
+  #results style="display: none"
+    h2
+    ul#movies
+
+    button#reset.btn.btn-custom Search Again
