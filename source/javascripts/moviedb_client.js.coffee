@@ -11,6 +11,9 @@ class MovieDBClient
     return null unless path
     "#{BASE_IMAGE_URL}#{size}#{path}"
 
+  buildMovieUrl: (id) ->
+    "https://www.themoviedb.org/movie/#{id}"
+
   get: (path, options) ->
     $.ajax
       type: "get"

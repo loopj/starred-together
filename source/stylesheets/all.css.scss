@@ -16,15 +16,23 @@
                0 0 $radius*10 $color, 0 0 $radius*15 $color;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   background: #001d23;
   font-family: 'Open Sans', sans-serif;
   text-align: center;
+  height: 100%;
 }
 
 // Main column
 main {
   display: inline-block;
+  min-height: 100%;
+  position: relative;
+  padding-bottom: 80px;
 }
 
 // Custom button style
@@ -118,7 +126,9 @@ section {
     li {
       display: table-row;
       span {
-        color: rgba(255,255,255,0.8);
+        a{
+          color: rgba(255,255,255,0.8);
+        }
         font-size: 2rem;
         display: table-cell;
         vertical-align: middle;
@@ -135,6 +145,26 @@ section {
       padding: 0;
       margin: 0;
     }
+  }
+}
+
+// Footer
+footer {
+  opacity: 0.1;
+  // margin-top: 200px;
+  color: rgba(255,255,255,0.8);
+
+  position:absolute;
+  bottom:0;
+  left: 0;
+  width: 100%;
+
+  img {
+    width: 100px;
+  }
+
+  &:hover {
+    opacity: 0.5;
   }
 }
 
@@ -171,5 +201,9 @@ section {
 
   .and {
     display: none !important;
+  }
+
+  .btn-custom {
+    width: 20rem;
   }
 }

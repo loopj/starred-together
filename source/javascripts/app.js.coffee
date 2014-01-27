@@ -8,7 +8,7 @@ class StarredTogether
   RESULTS_TEMPLATE = Hogan.compile """
     <li>
       <img src="{{image}}">
-      <span>{{name}}</span>
+      <span><a href="{{url}}">{{name}}</a></span>
     </li>
     """
 
@@ -23,6 +23,26 @@ class StarredTogether
     {name: "Cate Blanchett", id: 112}
     {name: "Sandra Bullock", id: 18277}
     {name: "Meryl Streep", id: 5064}
+    {name: "Judi Dench", id: 5309}
+    {name: "Jared Leto", id: 7499}
+    {name: "Bradley Cooper", id: 51329}
+    {name: "Julia Roberts", id: 1204}
+    {name: "Brad Pitt", id: 287}
+    {name: "Gene Hackman", id: 193}
+    {name: "Anthony Hopkins", id: 4173}
+    {name: "Samuel L. Jackson", id: 2231}
+    {name: "Michael Caine", id: 3895}
+    {name: "Christopher Lee", id: 3895}
+    {name: "Jackie Chan", id: 18897}
+    {name: "Sean Connery", id: 738}
+    {name: "Robin Williams", id: 2157}
+    {name: "Morgan Freeman", id: 192}
+    {name: "Kurt Russell", id: 6856}
+    {name: "Ben Stiller", id: 737}
+    {name: "Bruce Willis", id: 62}
+    {name: "Jack Nicholson", id: 514}
+    {name: "Liam Neeson", id: 3896}
+    {name: "Nicolas Cage", id: 2963}
   ]
 
   shuffleArray = (a) ->
@@ -109,21 +129,20 @@ class StarredTogether
 
       # Find shared credits
       Q.all(actorCredits).then (data) =>
-        sharedCredits = data[0].cast.filter (credit) ->
-          data[1].cast.some (el) -> credit.id == el.id
+        sharedCredits = @findSharedCredits(data[0], data[1])
 
         # Show the results
         @movieList.empty().show()
 
-        actorNames = $.map(@actorInputs, (el) -> $(el).val()).join(" & ")
+        actorNames = @getActorNames().join(" & ")
         if sharedCredits.length > 0
-          movies = if sharedCredits.length > 1 then "movies" else "movie"
-          @resultsTitle.text("Yes! #{actorNames} have starred in #{sharedCredits.length} #{movies} together!")
+          @resultsTitle.text("Yes! #{actorNames} have starred in #{sharedCredits.length} #{if sharedCredits.length > 1 then "movies" else "movie"} together!")
 
           sharedCredits.forEach (credit) =>
             @movieList.append RESULTS_TEMPLATE.render({
-              name: credit.title,
+              name: credit.title
               image: @client.buildImageUrl(credit.poster_path)
+              url: @client.buildMovieUrl(credit.id)
             })
         else
           @movieList.hide()
@@ -132,7 +151,15 @@ class StarredTogether
         @loadingSpinner.fadeOut => @resultsPane.fadeIn()
 
       , (xhr) ->
-        console.log "failed", xhr
+        # TODO: Handle bad data back from API
+        console.log "Lookup failed", xhr
+
+  getActorNames: ->
+    $.map(@actorInputs, (el) -> $(el).val())
+
+  findSharedCredits: (creditsX, creditsY) ->
+    creditsX.cast.filter (credit) ->
+      creditsY.cast.some (el) -> credit.id == el.id
 
   reset: (cb) ->
     @actorInputs
