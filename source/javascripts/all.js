@@ -1,2 +1,2 @@
 //= require moviedb_client
-//= require_tree .
+//= require app
